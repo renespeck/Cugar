@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<project basedir="." default="build" name="borderflow">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../../eclipse-java-helios-SR1-win32/eclipse"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="borderflow.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/AffinityPropagationConsole.jar"/>
+        <pathelement location="lib/asv-toolbox_util_CommonFileChooser.jar"/>
+        <pathelement location="lib/colt.jar"/>
+        <pathelement location="lib/cooccaccess.jar"/>
+        <pathelement location="lib/CW.jar"/>
+        <pathelement location="lib/IOWrapper.jar"/>
+        <pathelement location="lib/java-getopt-1.0.9.jar"/>
+        <pathelement location="lib/jtds-1.2.2.jar"/>
+    	<pathelement location="lib/junit-4.8.2.jar"/>
+        <pathelement location="lib/jung-algorithms-2.0.1.jar"/>
+        <pathelement location="lib/jung-api-2.0.1.jar"/>
+        <pathelement location="lib/jung-graph-impl-2.0.1.jar"/>
+        <pathelement location="lib/log4j-1.2.16.jar"/>
+        <pathelement location="lib/lucene-1.4.3.jar"/>
+        <pathelement location="lib/mysql-connector-java-3.0.11-stable-bin.jar"/>
+        <pathelement location="lib/semiosys.jar"/>
+        <pathelement location="lib/sqljdbc.jar"/>
+        <pathelement location="lib/prefuse.jar"/>
+        <pathelement location="lib/ajt-1.20.jar"/>
+        <pathelement location="lib/collections-generic-4.01.jar"/>
+        <pathelement location="lib/commons-math-1.2.jar"/>
+        <pathelement location="lib/Jama-1.0.2.jar"/>
+        <pathelement location="lib/javaml-0.1.5.jar"/>
+        <pathelement location="lib/libsvm.jar"/>
+        <pathelement location="lib/weka.jar"/>    	
+    </path>
+	
+    <target name="clean">
+        <delete dir="bin"/>
+    	<delete dir="plugin"/>    	
+    	<delete dir="release_cugar"/>      	
+    </target>
+	
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="img">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            	<exclude name="**/*.html"/>
+            	<exclude name="**/*.txt"/>
+            	<exclude name="**/*.css"/>
+            </fileset>
+        </copy>
+    </target>
+	    
+    <target depends="init" name="build">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="img"/>
+            <classpath refid="borderflow.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="borderflow.classpath"/>
+        </javac>
+    </target>
+	
+	<target name="make-plugins-jar">		
+		<mkdir dir="plugin" />		
+		<jar destfile="plugin/ClusterAlgorithmAP.jar" basedir="bin" includes="de/uni_leipzig/cugar/cluster/ClusterAlgorithmAP.class de/uni_leipzig/cugar/cluster/ConfigurationAP.class" />
+		<jar destfile="plugin/ClusterAlgorithmBF.jar" basedir="bin" includes="de/uni_leipzig/cugar/cluster/ClusterAlgorithmBF.class" />
+		<jar destfile="plugin/ClusterAlgorithmCW.jar" basedir="bin" includes="de/uni_leipzig/cugar/cluster/ClusterAlgorithmCW.class de/uni_leipzig/cugar/cluster/ConfigurationCW.class" />
+		<jar destfile="plugin/ClusterAlgorithmMCL.jar" basedir="bin" includes="de/uni_leipzig/cugar/cluster/ClusterAlgorithmMCL.class" />
+		<jar destfile="plugin/ClusterAlgorithmMCL2.jar" basedir="bin" includes="de/uni_leipzig/cugar/cluster/ClusterAlgorithmMCL2.class" />
+		<jar destfile="plugin/ClusterAlgorithmKNN.jar" basedir="bin" includes="de/uni_leipzig/cugar/cluster/ClusterAlgorithmKNN.class" />
+    	<copy file="ap.cfg" todir="plugin"/> 
+    	<copy file="cw.cfg" todir="plugin"/> 
+	</target>
+		
+    <target name="Cugar-start">
+        <java classname="de.uni_leipzig.cugar.gui.Main" failonerror="true" fork="yes">
+            <classpath refid="borderflow.classpath"/>
+        </java>
+    </target>
+	
+    <target name="BorderFlow-start">
+        <java classname="de.uni_leipzig.bf.cluster.Main" failonerror="true" fork="yes">
+            <classpath refid="borderflow.classpath"/>
+        </java>
+    </target>
+		
+    <target name="create-cugar-release-jar" >
+		<mkdir dir="release_cugar" />	
+ 	   	<jar destfile="release_cugar/Cugar.jar">
+    		<manifest>
+    	    	<attribute name="Main-Class" value="de.uni_leipzig.cugar.gui.Main"/>
+    	        <attribute name="Class-Path" value=". lib/AffinityPropagationConsole.jar lib/asv-toolbox_util_CommonFileChooser.jar lib/colt.jar lib/cooccaccess.jar lib/CW.jar lib/IOWrapper.jar lib/java-getopt-1.0.9.jar lib/jtds-1.2.2.jar lib/jung-api-2.0.1.jar lib/collections-generic-4.01.jar lib/jung-algorithms-2.0.1.jar lib/jung-graph-impl-2.0.1.jar lib/log4j-1.2.16.jar lib/lucene-1.4.3.jar lib/mysql-connector-java-3.0.11-stable-bin.jar lib/semiosys.jar lib/sqljdbc.jar lib/prefuse.jar lib/ajt-1.20.jar lib/commons-math-1.2.jar lib/Jama-1.0.2.jar lib/javaml-0.1.5.jar lib/libsvm.jar lib/weka.jar lib/junit-4.8.2.jar"/>
+    	    </manifest>
+    	    <fileset dir="bin"/>
+    	 </jar>
+
+		<delete dir="release_cugar/lib"/>
+		<mkdir dir="release_cugar/lib"/>
+		<copy file="lib/AffinityPropagationConsole.jar" todir="release_cugar/lib"/>
+		<copy file="lib/asv-toolbox_util_CommonFileChooser.jar" todir="release_cugar/lib"/>
+		<copy file="lib/colt.jar" todir="release_cugar/lib"/>
+		<copy file="lib/cooccaccess.jar" todir="release_cugar/lib"/>
+		<copy file="lib/CW.jar" todir="release_cugar/lib"/>
+		<copy file="lib/IOWrapper.jar" todir="release_cugar/lib"/>
+		<copy file="lib/java-getopt-1.0.9.jar" todir="release_cugar/lib"/>
+		<copy file="lib/jtds-1.2.2.jar" todir="release_cugar/lib"/>
+		<copy file="lib/jung-api-2.0.1.jar" todir="release_cugar/lib"/>
+		<copy file="lib/collections-generic-4.01.jar" todir="release_cugar/lib"/>
+		<copy file="lib/jung-algorithms-2.0.1.jar" todir="release_cugar/lib"/>
+		<copy file="lib/jung-graph-impl-2.0.1.jar" todir="release_cugar/lib"/>
+		<copy file="lib/log4j-1.2.16.jar" todir="release_cugar/lib"/>
+		<copy file="lib/lucene-1.4.3.jar" todir="release_cugar/lib"/>
+		<copy file="lib/mysql-connector-java-3.0.11-stable-bin.jar" todir="release_cugar/lib"/>
+		<copy file="lib/semiosys.jar" todir="release_cugar/lib"/>
+		<copy file="lib/sqljdbc.jar" todir="release_cugar/lib"/>
+		<copy file="lib/prefuse.jar" todir="release_cugar/lib"/>
+		<copy file="lib/ajt-1.20.jar" todir="release_cugar/lib"/>
+		<copy file="lib/commons-math-1.2.jar" todir="release_cugar/lib"/>
+		<copy file="lib/Jama-1.0.2.jar" todir="release_cugar/lib"/>
+		<copy file="lib/javaml-0.1.5.jar" todir="release_cugar/lib"/>
+		<copy file="lib/libsvm.jar" todir="release_cugar/lib"/>
+		<copy file="lib/weka.jar" todir="release_cugar/lib"/> 
+    	<copy file="lib/junit-4.8.2.jar" todir="release_cugar/lib"/>     	
+    	<copy file="readme/readme_borderflow_gui/manual.pdf" todir="release_cugar/"/>  
+    	
+        <copy includeemptydirs="false" todir="release_cugar/plugin">
+            <fileset dir="plugin"></fileset>
+        </copy>
+    	 </target>
+</project>

@@ -1,0 +1,30 @@
+public static void cugarDemo(){
+	...
+	ClusterContext cc = model.getClusterContext();
+	cc.addAlgorithm("Foobar", new ClusterAlgorithmFoobar());	
+	...
+}
+
+
+
+public class ClusterAlgorithmFoobar extends ClusterAlgorithm {
+
+	public ClusterAlgorithmFoobar(){
+		config_A = new String []{"label_A","value_1 ","value_2"};
+	}
+	@Override
+	protected Table clustering(String[] seeds, double threshold,
+			String valuesA, String valuesB, String valuesC, String valuesD) {
+
+		Foobar.loadFile( filename , getSeparator ());
+		List<Set<String>> clusters = Foobar.clusters(valuesA);
+		Table table = getTable();
+		for( Set <String > cluster : clusters )
+			table.set(table.addRow(), CLUSTER_COLUMN_NAME, cluster);
+		return table ;
+	}
+	@Override
+	public String getName() {
+		return "Foobar";
+	}
+}
