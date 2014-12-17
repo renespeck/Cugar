@@ -1,0 +1,62 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.aksw</groupId>
+    <artifactId>cugar</artifactId>
+    <version>0.0.1</version>
+    <name>Cugar</name>
+    <packaging>jar</packaging>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <system.libs>${basedir}/lib</system.libs>
+        <system.data>${basedir}/data</system.data>
+    </properties>
+    <!-- build -->
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>ant-magic</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <property name="compile_classpath"
+                                    refid="maven.compile.classpath" />
+                                <property name="outputDir"
+                                    value="${project.build.outputDirectory}" />
+                                <property name="sourceDir"
+                                    value="${project.build.sourceDirectory}" />
+                                <ant antfile="${basedir}/cugar.xml"
+                                    target="clean" />
+                                <ant antfile="${basedir}/cugar.xml"
+                                    target="init" />
+                                <ant antfile="${basedir}/cugar.xml"
+                                    target="build" />
+                                <ant antfile="${basedir}/cugar.xml"
+                                    target="make-plugins-jar" />
+                                <ant antfile="${basedir}/cugar.xml"
+                                    target="create-cugar-release-jar" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
