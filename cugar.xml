@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="borderflow">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../../eclipse-java-helios-SR1-win32/eclipse"/>
-    <property name="debuglevel" value="source,lines,vars"/>
+	<property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <path id="borderflow.classpath">
@@ -59,7 +58,7 @@
             <src path="img"/>
             <classpath refid="borderflow.classpath"/>
         </javac>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+        <javac  fork="yes" debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="src"/>
             <classpath refid="borderflow.classpath"/>
         </javac>
@@ -126,8 +125,8 @@
 		<copy file="lib/libsvm.jar" todir="release_cugar/lib"/>
 		<copy file="lib/weka.jar" todir="release_cugar/lib"/> 
     	<copy file="lib/junit-4.8.2.jar" todir="release_cugar/lib"/>     	
-    	<copy file="readme/readme_borderflow_gui/manual.pdf" todir="release_cugar/"/>  
-    	
+    	<!--<copy file="readme/readme_borderflow_gui/manual.pdf" todir="release_cugar/"/>  
+    	-->
         <copy includeemptydirs="false" todir="release_cugar/plugin">
             <fileset dir="plugin"></fileset>
         </copy>
